@@ -1,0 +1,25 @@
+name: Validate Web Assets
+
+on:
+  pull_request:
+    branches:
+      - br-QuickQuiz
+      - br-ProjectIQ
+
+jobs:
+  validate:
+    name: Validate Web Assets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check required files exist
+        run: |
+          echo "Checking required web files..."
+          test -f index.html && echo "✓ index.html" || (echo "✗ index.html missing" && exit 1)
+          test -f main.dart.js && echo "✓ main.dart.js" || (echo "✗ main.dart.js missing" && exit 1)
+          test -f manifest.json && echo "✓ manifest.json" || (echo "✗ manifest.json missing" && exit 1)
+          test -f flutter_service_worker.js && echo "✓ flutter_service_worker.js" || (echo "✗ flutter_service_worker.js missing" && exit 1)
+          echo "All required files present."
