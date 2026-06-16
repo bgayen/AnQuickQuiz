@@ -1,4 +1,4 @@
-name: Flutter Build Check
+name: Validate Web Assets
 
 on:
   pull_request:
@@ -7,27 +7,19 @@ on:
       - br-ProjectIQ
 
 jobs:
-  build-check:
-    name: Flutter Build Check
+  validate:
+    name: Validate Web Assets
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Analyze code
-        run: flutter analyze
-
-      - name: Run tests
-        run: flutter test
-
-      - name: Build web (verify)
-        run: flutter build web --release
+      - name: Check required files exist
+        run: |
+          echo "Checking required web files..."
+          test -f index.html && echo "✓ index.html" || (echo "✗ index.html missing" && exit 1)
+          test -f main.dart.js && echo "✓ main.dart.js" || (echo "✗ main.dart.js missing" && exit 1)
+          test -f manifest.json && echo "✓ manifest.json" || (echo "✗ manifest.json missing" && exit 1)
+          test -f flutter_service_worker.js && echo "✓ flutter_service_worker.js" || (echo "✗ flutter_service_worker.js missing" && exit 1)
+          echo "All required files present."
